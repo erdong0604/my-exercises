@@ -1,0 +1,55 @@
+<!--
+ * @Description: 
+ * @Author: chenM
+ * @Date: 2020-04-09 11:25:37
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //给出一个 32 位的有符号整数，你需要将这个整数中每位上的数字进行反转。
+        /*
+        输入: 123
+        输出: 321
+        输入: -123
+        输出: -321   
+        输入: 120
+        输出: 21   
+
+        注意:
+
+        假设我们的环境只能存储得下 32 位的有符号整数，则其数值范围为 [−231,  231 − 1]。请根据这个假设，如果反转后整数溢出那么就返回 0。
+
+        */
+        //解题思路
+        //1.先把字符串分隔成数组 用fill()填充到数组里
+        //2.将数组反转
+        //3.将数组链接成字符串
+
+        var reverse=function(x) {
+            let flag=x>0? 1:-1;
+            let arr=x.toString().split('');
+            if(flag===-1) arr.shift();
+            arr.reverse();
+            while(arr[0]==='0') {
+                arr.shift();
+            }
+            let res=flag*arr.join('');
+            let max=Math.pow(2,31)-1;
+            let min=-Math.pow(2,31);
+
+            return (res>max||res<min)? 0:res;
+        };
+
+        console.log(reverse(-6384741200))
+    </script>
+</body>
+
+</html>
