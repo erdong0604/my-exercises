@@ -1,1 +1,1 @@
-[](https://github.com/erdong0604/my-exercises/images/1.jpeg)
+[](https://github.com/erdong0604/my-exercises/blob/master/images/1.jpeg)
