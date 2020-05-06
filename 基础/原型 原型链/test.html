@@ -1,0 +1,117 @@
+<!--
+ * @Description: 
+ * @Author: erdong
+ * @Date: 2020-04-25 18:16:04
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // function Person() {
+        // }
+
+        // var p1=new Person();
+        // var p2=new Person();
+        // console.log(p1.name); // erdong
+        // console.log(p2.name); // erdong
+
+        // console.dir(p1)
+        // console.dir(Person.prototype)
+        // console.dir(Person.prototype.constructor==Person)
+
+        // Person.prototype.name='erdong';
+        // Person.prototype.show=function() {
+        //     console.log(this.name);
+        // }
+        // var p1=new Person();
+        // console.log(p1.name);// erdong
+        // p1.show();// erdong
+        // console.log(Object.prototype.__proto__===null);
+
+        // function superType() {
+        //     this.name='erdong';
+        // } 
+        // superType.prototype.
+
+        // Person.prototype={
+        //     constructor: Person,
+        //     name: 'erdong',
+        //     sex: '男',
+        //     doSoming: function() {
+        //         console.log(this.name);
+        //     }
+        // }
+        // var p1=new Person();
+        // p1.doSoming();
+        // console.log(p1.__proto__==Person.prototype);
+        // console.log(Person.prototype);
+        // console.log(Person.prototype.constructor==Person);
+        // console.log(Person.prototype.constructor==Object);
+
+        // <custom-tree type='yangshi' :data='data' @onSelect="handleYangshiTree"></custom-tree>
+        // <custom-tree type='xianyin' :data='data1' @onSelect="handleXianyinTree"></custom-tree>
+
+
+        // function SuperType() {
+        // }
+        // SuperType.prototype.name='erdong';
+        // SuperType.prototype.getName=function() {
+        //     return this.name;
+        // }
+
+        // function SubType() {
+        // }
+        // SubType.prototype=new SuperType();
+        // console.log(SubType.prototype)
+        // var instance=new SubType();
+
+        // console.log(instance.name);
+        // console.log(instance.getName());
+        // function Person() {
+        // }
+
+        // Person.prototype.name='erdong';
+
+        // var p=new Person();
+        // p.sex='男';
+
+        // console.log(p.hasOwnProperty('name'));
+        // console.log(p.hasOwnProperty('sex'));
+        // console.log(p.hasOwnProperty('address'));
+        // console.log(Person.prototype.isPrototypeOf(p));//  true
+        // console.log(Object.getPrototypeOf(p)===Person.prototype);//  true
+        // console.log(p instanceof Person); // true
+        // console.log(p instanceof Object); // true
+        // console.log(Function instanceof Object); // true
+        // console.log(Object instanceof Function); // true
+        // function Person() {
+        // }
+        // console.log(Person.__proto__===Function.prototype)
+        // var a=1;
+        // let a=10;
+
+
+        var p=(function(a) {
+            this.a=a;
+            return function(b) {
+                return this.a+b;
+            }
+        }(function(a,b) {
+            return a;
+        }(1,2)))
+        console.log(p(4))
+
+
+
+
+    </script>
+</body>
+
+</html>
