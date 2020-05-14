@@ -1,0 +1,269 @@
+<!--
+ * @Description: 
+ * @Author: erdong
+ * @Date: 2020-04-25 18:16:04
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        // var value=1;
+        // function foo(x,y) {
+        //     console.log(this.value)
+        // }
+        // var obj={
+        //     value: 2
+        // }
+        // var o={
+        //     value: 3
+        // }
+        // var bar=foo.bind(obj,3,4);
+        // bar.call(o); // 2
+        var o={
+            a: 1,
+            name: 'erdong'
+        }
+        // Object.freeze(o)
+        var jawil={
+            name: "chen",
+            sayHello: function(age) {
+                console.log(this)
+                // console.log("hello, i am ",this.name+" "+age+" years old");
+            }
+        };
+
+
+        /**
+         * @description: 实现call方法
+         * @param : context this要绑定的值
+         * @param : args 要传递给调用call方法的函数的实参集合。
+         * @return: 函数返回值 
+         */
+        Function.prototype.myCall=function(context,...args) {
+            let handler=Symbol();// 生成一个唯一的值，用来作为要绑定对象的属性key，储存当前调用call方法的函数
+            if(typeof this!=='function') {
+                //调用者不是函数
+
+                throw this+'.myCall is not a function'
+            }
+            // 如果第一个参数为引用类型或者null
+            if(typeof context==='object'||typeof context==='function') {
+                // 如果为null 则this为window
+                context=context||window;
+            } else {
+                // 如果为undefined 则this绑定为window
+                if(typeof context==='undefined') {
+                    context=window;
+                } else {
+                    // 基本类型包装  1 => Number{1}
+                    context=Object(context);
+                }
+            }
+
+            // this 为当前调用call方法的函数。
+            context[handler]=this;
+            // 执行这个函数。这时这个函数内部this绑定为cxt，储存函数执行后的返回值。
+            let result=context[handler](...args);
+            // 删除对象上的函数
+            delete context[handler];
+            // 返回返回值
+            return result;
+        }
+        // function func() {
+        //     console.log(this);
+        // }
+        // func.myCall(func);     //输出func
+        // func.myCall.myCall(func); //输出window
+
+
+
+
+        /**
+         * @description: 实现apply方法
+         * @param : context this要绑定的值
+         * @param : argsArr 要传递给调用apply方法的函数的实参集合。数组形式。
+         * @return: 函数返回值
+         */
+        Function.prototype.myApply=function(context,argsArr) {
+            let handler=Symbol();// 生成一个唯一的值，用来作为要绑定对象的属性key，储存当前调用call方法的函数
+            if(typeof this!=='function') {
+                //调用者不是函数
+
+                throw this+'.myBind is not a function'
+            }
+            let args=[];
+            // 如果传入的参数是不是数组，则无效
+            if(typeof argsArr==='object'||typeof context==='function'||typeof argsArr==='undefined') {
+                args=Array.isArray(argsArr)? argsArr:[];
+            } else {
+                // 如果为基本类型，如果是undefined，则无效，其它类型则抛出错误。
+                throw 'TypeError: CreateListFromArrayLike called on non-object'
+            }
+            // 如果第一个参数为引用类型或者null
+            if(typeof context==='object') {
+                // 如果为null 则this为window
+                context=context||window;
+            } else {
+                // 如果为undefined 则this绑定为window
+                if(typeof context==='undefined') {
+                    context=window;
+                } else {
+                    // 基本类型包装  1 => Number{1}
+                    context=Object(context);
+                }
+            }
+
+            // this 为当前调用call方法的函数。
+            context[handler]=this;
+            // 执行这个函数。这时这个函数内部this绑定为cxt，储存函数执行后的返回值。
+            let result=context[handler](...args);
+            // 删除对象上的函数
+            delete context[handler];
+            // 返回返回值
+            return result;
+        }
+
+        // foo.apply()
+        // foo.apply(o,1);
+        // foo.myApply(o,1);
+        // jawil.sayHello.call()
+
+
+        /**
+         * @description: 实现bind方法
+         * @param : context this要绑定的值
+         * @param : args 调用bind方法时，除第一个参数外的参数集合，这些参数会被预置在绑定函数的参数列表中
+         * @return: 返回一个函数
+         */
+        Function.prototype.myBind=function(context,...args) {
+            // 这里的this为调用bind方法的函数。
+            let thisFunc=this;
+            // 如果调用bind的变量不是Function类型，抛出异常。
+            if(typeof thisFunc!=='function') {
+                throw new TypeError('Function.prototype.bind - '+
+                    'what is trying to be bound is not callable');
+            }
+            // 定义一个函数boundF
+            // 下面的”新函数“ 均为函数调用bind方法之后创建的函数。
+            let boundF=function() {
+                // 这里的 arguments 为函数经过bind方法调用之后生成的函数再调用时的实参列表
+                let boundFAgrs=arguments;
+                // 把调用bind方法时除第一个参数外的参数集合与新函数调用时的参数集合合并。当做参数传递给call方法
+                let totalAgrs=[...args,...arguments];
+                // 判断当前新函数是否是通过new关键词调用
+                let isUseNew=this instanceof boundF;
+                // 如果是->把call方法第一个参数值为当前的this(这里的this也就是通过new调用新函数生成的新对象)
+                // 如果否->把调用bind方法时的传递的第一个参数当做call的第一个参数传递
+
+                thisFunc.call(isUseNew? this:context,...totalAgrs);
+            }
+            //通过原型链继承的方式让原函数的原型和新函数的原型，都在通过new关键词构造的新对象的原型链上
+            // b instanceof 原函数  -> true
+            // b instanceof 新函数  -> true
+            var F=function() {};
+            F.prototype=thisFunc.prototype;
+            boundF.prototype=new F();
+
+            return boundF;
+        }
+
+        // var obj={
+        //     name: 'erdong'
+        // }
+
+        // function foo(name,age) {
+        //     this.age=age;
+        // }
+        // foo.prototype.say=function() {
+        //     console.log(this.age);
+        // }
+        // var bar=foo.bind(obj,'chen');
+        // var b=new bar(27);
+
+        // b.say();
+
+        // bar.aaa=1;
+        // console.log(foo.aaa)
+        // console.log(foo.prototype)
+        // console.log(b instanceof foo)
+        // console.log(b instanceof bar)
+
+        // console.log(b)
+
+
+        // var obj={name: "Smiley"};
+        // var greeting=function(str,lang) {
+        //     this.value='greetingValue';
+        //     console.log("Welcome "+this.name+" to "+str+" in "+lang);
+        // };
+        // var objGreeting=greeting.myBind(obj,'the world');
+        // var newObj=new objGreeting('JS');
+        // console.log(newObj instanceof greeting)
+        // console.log(newObj.value);
+
+        // console.log(newObj instanceof objGreeting)
+        // console.log(newObj instanceof greeting)
+
+
+
+        Function.prototype.softBind=function(context,...args) {
+            // 这里的this为调用bind方法的函数。
+            let thisFunc=this;
+            // 如果调用bind的变量不是Function类型，抛出异常。
+            if(typeof thisFunc!=='function') {
+                throw new TypeError('Function.prototype.bind - '+
+                    'what is trying to be bound is not callable');
+            }
+            // 定义一个函数boundF
+            // 下面的”新函数“ 均为函数调用bind方法之后创建的函数。
+            let boundF=function() {
+                // 这里的 arguments 为函数经过bind方法调用之后生成的函数再调用时的实参列表
+                let boundFAgrs=arguments;
+                // 把调用bind方法时除第一个参数外的参数集合与新函数调用时的参数集合合并。当做参数传递给call方法
+                let totalAgrs=[...args,...arguments];
+
+                // 如果调用新函数时存在新的this，并且新的this不是全局对象，那么我们认为这里想要更改新函数this的绑定。因此让新函数的内部this绑定为当前新的this。
+
+                thisFunc.call(this&&this!==window? this:context,...totalAgrs);
+            }
+            //通过原型链继承的方式让原函数的原型和新函数的原型，都在通过new关键词构造的新对象的原型链上
+            // b instanceof 原函数  -> true
+            // b instanceof 新函数  -> true
+            var F=function() {};
+            F.prototype=thisFunc.prototype;
+            boundF.prototype=new F();
+
+            return boundF;
+        }
+        var o={
+            name: 'erdong'
+        }
+        var o1={
+            name: "chen"
+        }
+        var foo=function() {
+            console.log(this);
+        }
+        var bar=foo.bind(o);
+
+        var obj={
+            foo: bar
+        }
+        bar(); //  this => o
+        bar.call(o1); // this => o
+        obj.foo(); // this => o
+
+        // new bar();
+        // foo.myCall(o1);
+    </script>
+</body>
+
+</html>
