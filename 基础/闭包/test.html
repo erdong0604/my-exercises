@@ -1,0 +1,103 @@
+<!--
+ * @Description: 
+ * @Author: erdong
+ * @Date: 2020-04-25 18:16:04
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var a=1;
+        // (function() {
+        //     console.log(a)
+        // })()
+
+        // if(true) {
+        //     let a=111;
+        //     console.log(a)
+        // }
+
+        // (function() {
+        //     if(true) {
+        //         var a=111;
+        //         console.log(a)
+        //     }
+        // })()
+        // console.log(a)
+
+        // for(var i=0;i<5;i++) {
+        //     setTimeout(function() {
+        //         console.log(i);
+        //     },1000)
+        // }
+        // for(var i=0;i<5;i++) {
+        //     (function() {
+        //         setTimeout(function() {
+        //             console.log(i);
+        //         },1000)
+        //     })();
+        // }
+        // for(var i=0;i<5;i++) {
+        //     (function() {
+        //         var j=i;
+        //         setTimeout(function() {
+        //             console.log(j);
+        //         },1000)
+        //     })();
+        // }
+
+
+
+        // for(var a=0;a<5;a++) {
+        //     var a=4;
+        //     console.log(a)
+        // }
+        // for(var b=0;b<5;b++) {
+        //     let b=4;
+        //     console.log(b)
+        // }
+        // for(var i=0;i<5;i++) {
+        //     setTimeout(function() {
+        //         console.log(i);
+        //     },1000)
+        // }
+        // var i=20;
+
+        // for(var i=0;i<5;i++) {
+        //     setTimeout(function() {
+        //         console.log(i);
+        //     },1000)
+        // }
+        // for(var i=0;i<5;i++) {
+        //     setTimeout(function() {
+        //         console.log(i);
+        //     },1000)
+        // }
+        // function foo() {
+        //     var a=2;
+        //     function bar() {
+        //         console.log(a); // 2
+        //     }
+        //     bar();
+        // }
+        // foo();
+        function foo() {
+            var a=2;
+            function bar() {
+                console.log(a);
+            }
+            return bar;
+        }
+        var baz=foo();
+        baz(); // 2 —— 朋友，这就是闭包的效果。
+    </script>
+</body>
+
+</html>
