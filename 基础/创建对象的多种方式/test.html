@@ -1,0 +1,197 @@
+<!--
+ * @Description: 
+ * @Author: chenM
+ * @Date: 2020-05-14 16:29:40
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        // 原型：每个函数创建时都会有一个prototype属性，prototype属性下默认有一个constructor属性，其指向prototype所在的函数，
+        // 如果该函数通过new操作符调用，会创建一个实例对象，该对象下默认有一个隐式的原型属性，在一些浏览器里为__proto__,它默认指向构建它的构造函数的prototype属性。
+
+
+        // 可复用性
+
+
+        //  工厂模式
+
+        // function createPerson(name,age) {
+        //     var o=new Object();
+        //     o.name=name;
+        //     o.age=age;
+        //     o.sayName=function() {
+        //         console.log(this.name);
+        //     };
+        //     return o;
+        // }
+        // var person=createPerson('erdong',27);
+        // console.log(person);
+
+        // // 原型模式
+
+        // function createCar() {
+
+        // }
+        // createCar.prototype.name='erdong';
+        // createCar.prototype.age=27;
+
+        // var car1=new createCar();
+
+        // console.log()
+
+        // // 构造函数模式
+
+        // function Person(name,age) {
+        //     this.name=name;
+        //     this.age=age;
+        //     this.sayName=function() {
+        //         console.log(this.name);
+        //     }
+        // }
+        // var p=new Person('erdong',27);
+        // console.log(p)
+
+        // // 原型模式加构造函数模式
+
+        // function createPerson2(name,age) {
+
+        //     this.name=name;
+        //     this.age=age;
+
+        // }
+        // createPerson2.prototype.sayName=function() {
+        //     console.log(this.name);
+        // }
+
+        // var p2=new createPerson2('erdong',27);
+        // console.log(p2)
+
+        // var person={
+        //     name: 'erdong',
+        //     age: "27"
+        // }
+        // var person=new Object({
+        //     name: 'erdong',
+        //     age: "27"
+        // })
+        // console.log(person)
+
+        // // 工厂模式
+        // function createPerson(name,age) {
+        //     var o=new Object();
+        //     o.name=name;
+        //     o.age=age;
+        //     o.getName=function() {
+        //         console.log(this.name);
+        //     }
+        //     return o;
+        // }
+
+        //构造函数模式
+        // function CreatePerson(name,age) {
+        //     this.name=name;
+        //     this.age=age;
+        //     this.getName=function() {
+        //         console.log(this.name);
+        //     }
+        // }
+
+        //原型模式
+
+        // function CreatePerson() {};
+
+        // CreatePerson.prototype.name='erdong';
+        // CreatePerson.prototype.age=27;
+        // CreatePerson.prototype.getName=function() {
+        //     console.log(this.name);
+        // }
+        // 原型模式优化
+        // function CreatePerson() {};
+        // CreatePerson.prototype={
+        //     constructor: CreatePerson,
+        //     name: 'erdong',
+        //     age: 27,
+        //     getName: function() {
+        //         console.log(this.name)
+        //     }
+        // }
+
+        // 组合继承
+        function CreatePerson() {
+        }
+        // CreatePerson.prototype={
+        //     constructor: CreatePerson,
+        //     getName: function() {
+        //         console.log(this.name);
+        //     }
+        // }
+
+        // 动态原型模式
+
+        // function CreatePerson(name,age){
+        //     this.name = name;
+        //     this.age = age;
+        //     if(typeof this.getName !== 'function'){
+        //         CreatePerson.prototype.getName = function
+        //     }
+        // }
+
+        // 创建方式
+        // var person1=new CreatePerson('erdong',27);
+        // console.log(person1); // {name: "erdong", age: 27}
+        // person1.getName();
+        // CreatePerson.prototype={
+        //     name: 'erdong',
+        //     age: 27,
+        //     getName: function() {
+        //         console.log(this.name);
+        //     }
+        // }
+
+        // var person2=new CreatePerson('chen',18);
+
+        // console.log(person2) // {name: "chen", age: 18}
+        // person1.getName(); // erdong
+        // person2.getName(); // chen
+        // console.log(person1 instanceof CreatePerson); // true
+        // console.log(person2 instanceof CreatePerson); // true
+
+        function CreatePerson() {
+        }
+
+
+
+        var person1=new CreatePerson();
+        // person1.getName();
+
+        CreatePerson.prototype={
+            name: 'erdong',
+            age: 27,
+            getName: function() {
+                console.log(this.name);
+            }
+        }
+
+        var a={
+            value: 1
+        }
+        var b=a;
+
+        a={
+            value: 2
+        }
+
+        console.log(b.value); // 1
+    </script>
+</body>
+
+</html>
