@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>继承</title>
+</head>
+<body>
+    <script>
+
+        // 原型链继承
+        (function(){
+            function Person(){
+                this.weight = "75kg";
+                this.height = "180cm"
+            }
+
+            // getPersonInfo是在Person.prototype中的一个方法/属性
+            Person.prototype.getPersonInfo = function(){
+                console.log(`体重:${this.weight}; 身高：${this.height}`)
+            }
+
+            function Men(){
+                this.sex = '男人';
+            }
+
+            // 将Person的实例赋值给Men.prototype
+            Men.prototype = new Person();
+            
+            Men.prototype.getPersonInfo = function(){
+                console.log('我是一个男人');
+            }
+            
+            Men.prototype.getSex = function(){
+                console.log(this.sex);
+            }
+
+
+            // 通过new Men创建一个对象
+            var men1 = new Men();
+            men1.getSex(); // 男人
+            men1.getPersonInfo();// 体重:75kg; 身高：180cm
+            // men1 --> men1.__proto__ --> Men.prototype --> Men.prototype.__proto__ --> Object.prototype 
+        // men1 --> men1.__proto__ --> Men.prototype --> new Person() --> (new Person()).__proto__ --> Person.prototype  --> Person.prototype.__proto__ -->  Object.prototype 
+
+        })();
+        // 原型链继承问题
+        (function (){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+
+            function Men(){
+            }
+
+            Men.prototype = new Person(['money','sleep']);
+
+            var men1 = new Men();
+            men1.hobbies.push('eat'); // ["money", "sleep", "eat"]
+            console.log(men1.hobbies);
+
+            var men2 = new Men();
+            men2.hobbies.push('play');
+            console.log(men2.hobbies); // ["money", "sleep", "eat", "play"]
+
+        })();
+        /****/
+
+        // 借用构造函数继承
+
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+
+            function Men(hobbies){
+                Person.call(this,hobbies);
+            }
+
+            var men1 = new Men(["money", "sleep"]);
+            men1.hobbies.push('eat'); // ["money", "sleep", "eat"]
+            console.log(men1.hobbies);
+
+            var men2 = new Men(["money", "sleep"]);
+            men2.hobbies.push('play');
+            console.log(men2.hobbies); // ["money", "sleep", "eat"]
+
+            console.log(men1.hasOwnProperty('hobbies'))
+            console.log(men2.hasOwnProperty('hobbies'))
+        })();
+        
+        // 不能继承父类原型上的方法
+
+        (function(){
+            function Person(){
+                this.hobbies = ['money','sleep'];
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(){
+                Person.call(this);
+            }
+
+            var men1 = new Men();
+            // men1.getHobbies(); // Uncaught TypeError: men1.getHobbies is not a function
+
+        })();
+
+        /***/
+        //组合继承
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(hobbies){
+                // 通过这一步 继承父类的实例属性
+                Person.call(this,hobbies);
+            }
+            
+            //通过这一步 继承父类原型上的方法
+            Men.prototype = new Person();
+
+            var men1 = new Men(['money','sleep']);
+            men1.getHobbies(); // ['money','sleep']
+
+        })();
+
+        /****/
+        //组合继承优化1
+
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(hobbies){
+                // 通过这一步 继承父类的实例属性
+                Person.call(this,hobbies);
+            }
+            
+            //通过这一步将父类的原型直接赋值给子类的原型，减少了父类的调用次数
+            Men.prototype = Person.prototype;
+
+            // 当给子类的原型添加一个新方法，目的是让子类的实例都可以调用这个方法。
+            //但是会影响到父类的原型，导致以后每个继承父类的子类的原型上都会有这个方法
+            Men.prototype.menHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            var men1 = new Men(['money','sleep']);
+            men1.getHobbies(); // ['money','sleep']
+
+        })();
+         /****/
+        //组合继承优化2
+
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(hobbies){
+                // 通过这一步 继承父类的实例属性
+                Person.call(this,hobbies);
+            }
+            
+            // //通过这一步将父类的原型直接赋值给子类的原型，减少了父类的调用次数
+            // Men.prototype = Person.prototype;
+
+            // 通过 Object.create设置Men.prototype的__proto__为Person.prototype
+            Men.prototype = Object.create(Person.prototype);
+
+            // 当给子类的原型添加一个新方法，目的是让子类的实例都可以调用这个方法。
+            //但是会影响到父类的原型，导致以后每个继承父类的子类的原型上都会有这个方法
+            Men.prototype.menHobbies = function(){
+                console.log(this.hobbies);
+            }
+            var p1 = new Person(['money']);
+            // p1.menHobbies(); // Uncaught TypeError: p1.menHobbies is not a function
+
+
+            var men1 = new Men(['money','sleep']);
+            men1.menHobbies(); // ['money','sleep']
+
+        })();
+
+        
+
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(hobbies){
+                Person.call(this,hobbies);
+            }
+            
+            // 这里通过实现Object.create() 来使Men.prototype的__proto__的值为Person.prototype
+            Men.prototype = createProto(Person.prototype);
+
+            Men.prototype.menHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            var p1 = new Person(['money']);
+            // p1.menHobbies(); // Uncaught TypeError: p1.menHobbies is not a function
+
+
+            var men1 = new Men(['money','sleep']);
+            men1.menHobbies(); // ['money','sleep']
+
+
+            function createProto(obj){
+                // 由于Object.create就是将当前传入的对象赋值给新对象的__proto__ 
+                // 创建一个构造函数F。默认的F的实例的__proto__指向F.prototype
+                // F.prototype赋值为传入的对象
+                // 此时F的实例的__proto__指向为传入的对象
+
+                // 因此里完成了Object.create的功能
+                //1.创建一个新对象
+                //2.将新对象的__proto__赋值为当前传入的对象
+
+                function F(){};
+                F.prototype = obj;
+                return new F;
+            }
+        })();
+
+
+
+        (function(){
+            function Person(hobbies){
+                this.hobbies = hobbies;
+            }
+            Person.prototype.getHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            function Men(hobbies){
+                Person.call(this,hobbies);
+            }
+            // !!!重点
+            inheritPrototype(Men,Person);
+
+            Men.prototype.menHobbies = function(){
+                console.log(this.hobbies);
+            }
+
+            var p1 = new Person(['money']);
+            p1.menHobbies(); // Uncaught TypeError: p1.menHobbies is not a function
+
+
+            var men1 = new Men(['money','sleep']);
+            men1.menHobbies(); // ['money','sleep']
+
+            /**
+            *@desc 设置子类原型的__proto__为父类的原型
+            *@child  子类
+            *@parent 父类
+            **/
+            function inheritPrototype(child,parent){
+                function F(){};
+                F.prototype = parent.prototype;
+                child.prototype = new F;
+            }
+        })()
+
+    </script>
+</body>
+</html>
