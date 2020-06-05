@@ -7,11 +7,11 @@
 所以下面的例子全是以构造函数为例。
 
 #### 原型
---
+
 函数是也是对象，是一个属性的集合，所以函数下也有属性，也可以自定义属性。当我们创建一个函数时就默认会有一个`prototype`属性，这个属性是一个对象(属性的集合)。这个东西就是原型---通过调用构造函数而创建的那个对象**实例**的原型对象。`prototype`里也有个属性`constructor`,指向的是函数本身。
 
 ##### prototype
---
+
 ```
 function Person() {
 }
@@ -30,7 +30,7 @@ console.log(p2.name); // erdong
 那么实例是怎样与原型对象做关联的呢？
 
 ##### \_\_proto__
---
+
 每个`JavaScript`对象都具有的一个属性 -- `__proto__` 这个属性指向该对象的原型。不过它是一个隐式属性，并不是所有浏览器都支持它，我们可以把它看做一种实例与实例原型之间的联系桥梁。
 
 ```
@@ -46,7 +46,7 @@ console.log(p1.__proto__==Person.prototype); // true
 
 ![](https://tva1.sinaimg.cn/large/007S8ZIlgy1ge84dksmf5j30cm08saa0.jpg)
 ##### constructor
---
+
 每个函数都有一个`prototype`属性，而`prototype`下都有一个`constructor`属性，它指向`prototype`所在函数。
 
 ```
@@ -116,7 +116,6 @@ console.log(p1.name);// chen
 
 
 #### 原型的顶层
---
 
 我们在上述例子查找 p1的name 时当查找到 Person.prototype 还未找到时，我们应该还往下查找，下一级是谁呢？ 因为 `Person.prototype`是对象，那么他就有一个`__proto__`属性，指向的是其原型对象--也就是其对应构造函数的 `prototype`。那么`Person.prototype` 是谁呢？是`Object`，因为对象可以通过 `new Object()`创建:
 
@@ -152,8 +151,6 @@ console.log(Object.prototype.__proto__ === null); // true
 蓝色的线就表示一条原型链。
 
 #### 改变prototype
---
-
 
 ```
 function Person() {
@@ -236,7 +233,6 @@ console.log(instance.getName()); // erdong
 JavaScript高级程序设计一书中解释上述的示例为原型链的基本概念--当我们让原型对象等于另一个构造函数的实例，此时的原型对象将包含一个指向另一个原型的指针，相应的，另一个原型中也包含着一个指向另一个构造函数的指针。加入另一个原型又是另一个构造函数的实例，那么上述关系依然成立，如此层层递进，就构成了实例与原型的链条。这就是所谓**原型链**的基本概念。
 
 #### 关于原型的方法
---
 
 `isPrototypeOf、getPrototypeOf、instanceof、in、hasOwnProperty`
 
@@ -325,7 +321,7 @@ console.log(p.hasOwnProperty('address')); // false
 与 in 不同的是如果该属性存在于实例上包括原型链上，就返回true，而hasOwnProperty只有是自身的属性，才会返回true。
 
 #### 思考
---
+
 我们(构造)函数也是对象，上面说过对象下面都会有一个`__proto__`属性，那么函数的`__proto__`指向谁呢？
 
 ```

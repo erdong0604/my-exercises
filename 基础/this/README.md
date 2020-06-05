@@ -605,7 +605,7 @@ var obj={
     foo: function() {
         console.log(this.name); // erdong
         setTimeout(() =>  {
-            console.log(this.name); // chen
+            console.log(this.name); // erdong
         },1000)
     }
 }
