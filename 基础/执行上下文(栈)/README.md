@@ -403,12 +403,170 @@ ECStack = [
 总结：
 
 * JavaScript引擎是单线程的，所以一次只能进入一个函数执行上下文。
-* 程序开始执行时，首先创建全局执行上下文，然后将改执行上下为压入执行上下文栈的底部。
+* 程序开始执行时，首先创建全局执行上下文，然后将该执行上下为压入执行上下文栈的底部。
 * 每当执行一个函数，就会创建一个执行上下文，然后将其压入栈中，函数执行完成后，执行上下文从栈中弹出，等待垃圾回收。
 * 全局上下文只有唯一的一个，它在程序退出(关闭浏览器)时出栈。
 
 
-	
+#### ES6之后的执行上下文
+
+上面介绍的是`ES3`中的执行上下文和执行上下文栈，但是现在都`ES2020`了。从`ES6`之后执行上下文的创建就发生了变化，不是说创建过程发生变化，而是在创建阶段的产物发生了变化。
+
+我们知道执行上下文分为两个阶段：
+
+1. 创建阶段
+2. 执行阶段
+
+##### 创建阶段
+
+在`ES6`之前，创建阶段会产生三个对象：`作用域链、thisValue、VO/AO`，而在`ES6`之后就变成了：`thisValue、词法环境组件、变量环境组件`
+
+##### 词法环境
+
+>定义：词法环境是一种规范类型，基于ECMAScript代码的词法嵌套结构来定义标识符和具体变量和函数的关联。一个词法环境由环境记录和一个可能的引用outer词法环境的空值组成。
+
+词法环境是一种**标识符-变量映射**的结构。(标识符即为变量/函数的名字，而变量是对实际对象[包括函数类型对象]或原始值的引用)。
+
+词法环境包括：
+
+1. 环境记录
+2. 对外部环境引入记录
+
+**环境记录器**是储存当前作用域中的变量和函数声明的实际位置。
+
+**外部环境引入记录**是保存自身环境可以访问的其它外部环境。
+
+词法环境也分为两种：
+
+1. 全局词法环境
+2. 函数词法环境
+
+全局词法环境中的外部环境引入记录为` null `，因为它本身就是最外层的执行环境。环境记录器里存放着全局的变量及函数。
+
+函数词法环境中的外部环境引入为可能为全局词法环境或者是外部函数的词法环境。环境记录器里存放着用户声明的变量及函数
+
+环境记录器也分为两种：
+
+1. 在全局环境中，环境记录器是对象环境记录器
+2. 在函数环境中，环境记录器是声明式环境记录器
+
+```
+//全局执行上下文
+GlobalEC = {
+    // 词法环境
+    LexicalEnvironment: {
+        //环境记录器
+        EnvironmentRecord: {
+            Type: 'object'  // 对象环境记录器
+        }
+        //外部环境引入记录  null
+        outer: <null>
+    }
+}
+
+//函数执行上下文
+
+FunctionEC = {
+    // 词法环境
+    LexicalEnvironment: {
+        //环境记录器
+        EnvironmentRecord: {
+            Type: 'Declarative' // 声明式环境记录器
+        },
+        //外部环境引入记录  全局词法环境或者外部函数词法环境
+        outer: <Global or outerfunction environment reference>
+    }
+}
+```
+
+##### 变量环境
+
+它同样是一个词法环境，在`ES6`之后的唯一区别在于`词法环境用于储存函数声明与leo const声明的变量`，而`变量环境仅仅储存var声明的变量`。
+
+```
+let a = 20;  
+const b = 30;  
+var c;
+
+function multiply(e, f) {  
+ var g = 20;  
+ return e * f * g;  
+}
+
+c = multiply(20, 30);
+```
+
+此时的全局执行上下文和函数执行上下文：
+
+```
+//伪代码
+//全局执行上下文
+GlobalEC = {
+    //全局执行上下文中的this为全局对象
+    ThisBinding:<Global Object>
+    //词法环境
+    LexicalEnvironment:{
+        //环境记录器
+        EnvironmentRecord:{
+            Type:'object' // 环境记录器类型(对象环境记录器)
+
+            //下面是全局用let const声明的变量、函数声明。
+            a:<uninitialized>  // 未定义
+            b:<uninitialized>  // 未定义
+            multiply:<function> // 函数声明
+        }
+        // 外部环境引入记录
+        outer:<null>
+    }
+    //变量环境
+    VariableEnvironment:{
+        //环境记录器
+        EnvironmentRecord:{
+            Type:'object' //环境记录器类型(对象环境记录器)
+            c:<undefined> // 值为undefined
+        }
+        //外部环境引入记录
+        outer:<null>
+    }
+}
+//函数执行上下文
+FunctionEC = {
+    //函数执行上下文中的this为全局对象(因为它是独立调用)
+    ThisBinding:<Global Object>
+        //词法环境
+    LexicalEnvironment:{
+        //环境记录器
+        EnvironmentRecord:{
+            Type:'Declarative' // 环境记录器类型(声明环境记录器)
+            
+            //下面是全局用let const声明的变量、函数声明以及Arguments对象。
+            m:<uninitialized> // 未定义
+            Arguments: {0: 20, 1: 30, length: 2},  
+        }
+        // 外部环境引入记录 全局词法环境
+        outer:<GlobalEnvironment>
+    }
+    //变量环境
+    VariableEnvironment:{
+        //环境记录器
+        EnvironmentRecord:{
+            Type:'Declarative' // 环境记录器类型(声明环境记录器)
+            //下面是用var声明的变量
+            g:<undefined> // 值为undefined
+        }
+        // 外部环境引入记录 全局词法环境
+        outer:<GlobalEnvironment>
+    }
+}
+```
+
+只有在函数执行时才会进入函数执行上下文。
+
+当进入全局执行上下文时，先去查找var 声明的变量放入到变量环境中，赋值为`undefined`。然后查找 let，const声明的标识符和函数声明，放入到词法环境中，let，cont声明的标识符赋值为`uninitialized(未定义)`，函数声明赋值为当前的函数引用。这也就是为什么用let，const声明一个变量时，虽然不会有变量提升，但是我们在声明变量之前使用该变量就会抛出引用错误。而用var声明的变量则不会抛出错误。
+
+##### 执行阶段
+
+也就是执行全局或者函数内部代码。给对应的表示符赋值。
 
 
 
