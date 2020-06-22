@@ -28,7 +28,7 @@
 
 当用户输入内容实时反馈结果代码如下：
 
-```
+``` javascript
 
 // 输入框
 <input type="text" id="input"/>
