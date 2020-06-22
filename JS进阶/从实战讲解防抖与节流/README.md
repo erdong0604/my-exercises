@@ -2,12 +2,14 @@
 
 最近看到各种面经，防抖节流好像从来没有缺席过。虽然在项目中也使用过，但我对它俩的一直是
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfack4jmx7j305k05kjr9.jpg)
+
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265eb700fb188f?w=200&h=200&f=png&s=31430)
 
 
 这次一定要把它俩给安排的明明白白的
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfacqs15e9j30dw0dwjrk.jpg)
+
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265eca512f251f?w=500&h=500&f=png&s=106518)
 
 
 ## 防抖(Debounce)
@@ -26,7 +28,7 @@
 
 当用户输入内容实时反馈结果代码如下：
 
-```javascript
+```
 
 // 输入框
 <input type="text" id="input"/>
@@ -63,7 +65,7 @@ function ajaxRequest({user}){
 
 ```
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfadvwaawag30jy0f6n8k.gif)
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265de331cc63f1?w=718&h=546&f=gif&s=430802)
 
 
 上述gif图中左侧为用户输入内容，右侧为请求接口。很明显当用户输入内容时就会请求接口这种做法是不妥的，会造成资源上的浪费。
@@ -72,7 +74,7 @@ function ajaxRequest({user}){
 
 那现在就轮到防抖上场了。
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfae2g3n45j3073073a9y.jpg)
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265de331ce0c86?w=255&h=255&f=jpeg&s=5191)
 
 ### 实现思路
 
@@ -85,19 +87,16 @@ function ajaxRequest({user}){
 ```javascript
 /**
 * @fn : 要执行的函数
-* @delay : 执行函数的时间间隔
+* @delay : 执行执行函数的时间间隔
 */ 
 
 function debounce(fn,delay){
 	let timer; // 定时器
-
 	return function(...args){ // 形成闭包
-	
 	    timer&&clearTimeout(timer); // 当函数再次执行时，清除定时器，让定时器重新开始计时
 	
 	    // 利用定时器，让指定函数延迟执行。
 	    timer = setTimeout(function(){
-	
 	        // 执行传入的指定函数
 	        fn();
 	    },delay)
@@ -110,18 +109,16 @@ function debounce(fn,delay){
 
 第二版：
 
-```
+``` javascript
 /**
 * @fn : 要执行的函数
-* @delay : 执行函数的时间间隔
+* @delay : 执行执行函数的时间间隔
 */ 
 
 function debounce(fn,delay){
-
     let timer; // 定时器
- 
     return function(...args){ // 形成闭包  外部执行的函数其实是这个return出去的函数。
-        
+    
         // args 为函数调用时传的参数。
         
         let context = this; // this 为函数执行时的this绑定。
@@ -130,7 +127,6 @@ function debounce(fn,delay){
 
         // 利用定时器，让指定函数延迟执行。
         timer = setTimeout(function(){
-            
             // 执行传入的指定函数，利用apply更改this绑定和传参
             fn.apply(context,args);
         },delay)
@@ -140,7 +136,7 @@ function debounce(fn,delay){
 
 ### 使用
 
-```javascript
+``` javascript
 // 输入框
 <input type="text" id="input"/>
 let ipt = document.getElementById('input');
@@ -164,9 +160,9 @@ function handleSendPhone(val){
 
 ```
 
-###对比效果
+### 对比效果
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfafbc94v1g30ie07o4b6.gif)
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265de3328a769b?w=662&h=276&f=gif&s=477308)
 
 上述对比中，加入防抖后的代码，在连续的输入内容时，并不会连续执行请求，而是在**上次输入和下次输入间隔一定的时间才会执行**请求。
 这样对比就很明显了，在不影响业务需求的情况下，防抖可以避免资源浪费。
@@ -186,10 +182,10 @@ function handleSendPhone(val){
 
 代码实现：
 
-```
+``` javascript
 /**
 * @fn : 要执行的函数
-* @delay : 执行函数的时间间隔
+* @delay : 执行执行函数的时间间隔
 * @immediate : 是否立即执行函数 true 表立即执行，false 表非立即执行
 */        
 
@@ -225,14 +221,14 @@ function debounce(fn,delay,immediate){
 
 对比效果：
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfai1iioueg30ie07o151.gif)
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265de336d3f163?w=662&h=276&f=gif&s=463910)
 
 
 其实防抖很好理解。比如说当我们乘坐电梯时，当有人进入电梯时，电梯门会开，然后倒计时关上门。当持续不断的人进入电梯时，电梯就不会过指定的时间关上门。而是当有一个人进入时，电梯开始倒计时关门时间，再有一个人进入时，重置倒计时。直到倒计时完没有人进入电梯，则关门。这里就是我们所说的防抖。这里持续不断的人就是频繁触发的函数，这里的关门就是我们最后要执行的函数。倒计时关门时间就是我们要执行函数的间隔。 
 
 ## 节流(Throttle)
 
-###概念
+### 概念
 
 连续触发函数时，在规定单位时间内只会触发一次。
 
@@ -248,25 +244,23 @@ function debounce(fn,delay,immediate){
 
 如果函数持续触发，则让函数延迟执行，如果在延迟执行期间，函数还在触发，则无效。直到函数延迟执行结束，方可进行下一次函数延迟执行。
 
+### 基本版
 
 ```javascript
 
 /**
 * @fn : 要执行的函数
-* @delay : 每次函数的时间间隔
+* @delay : 每次执行函数的时间间隔
 */  
 function throttle(fn,delay){
     let timer;    // 定时器
 
     return function(...args){
-
         let context = this;
-
         // 如果timer存在，说明函数还未该执行 也就是距离上次函数执行未间隔指定的时间
         if(timer) return;
-
         // 如果函数执行之后还有函数还在触发，再延迟执行。
-        timer = setTimeout(function(...args){
+        timer = setTimeout(function(){
             // 当函数执行时，让timer为null。
             timer = null;
             fn.apply(context,args);
@@ -278,7 +272,7 @@ function throttle(fn,delay){
 
 ### 使用
 
-```
+``` javascript
 <input type="text" id="input"/>
 
 let ipt = document.getElementById('input');
@@ -302,7 +296,65 @@ function handleSendPhone(val){
 
 ### 对比效果：
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gfas4bww2dg30ie07o13g.gif)
+![](https://user-gold-cdn.xitu.io/2020/5/30/17265de356d34080?w=662&h=276&f=gif&s=405567)
+
+### 基本版问题
+
+上面的基本版节流还是有很大问题的，比如最后一次不会执行，第一次总是输出字符串的第一位。
+
+效果如下：
+
+![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gg0xoj2tvug30h006m75a.gif)
+
+按照图中所输入的值，我们肯定期望输出的是`aaaa`, `aaaaaa`。
+
+### 升级版
+
+#### 思路
+
+用现在的时间减去上次执行函数时的时间如果大于规定的时间间隔，就可以认为可以执行当前函数。
+
+即：` currTime - prevTime > delay ` 。
+
+``` javascript
+
+/**
+* @fn : 要执行的函数
+* @delay : 每次执行函数的时间间隔
+*/  
+function throttle(fn,delay){
+    let timer; 
+    let prevTime; // 记录上一次执行的时间
+    return function(...args){
+        let currTime = Date.now(); // 获取当前时间时间戳
+        let context = this;
+        if(!prevTime) prevTime = currTime; // 第一次执行时prevTime赋值为当前时间
+        
+        clearTimeout(timer); // 每次都清除定时器，保证定时器只是在最后一次执行
+        
+        if(currTime - prevTime > delay){ // 如果为true ，则表示两次执行函数的时间间隔为delay.
+            prevTime = currTime;
+            fn.apply(context,args);
+           	clearTimeout(timer); // 清除定时器。用来处理假如函数停止调用时刚好函数也停止执行，不需要获取后续的值。 详见下面定时器的介绍。
+            return;
+        }
+	
+	  // 当上面执行currTime - prevTime > delay 为false时，执行定时器。
+	  // 用来处理：假如下次函数执行时间未到，函数不继续调用了，会造成最后一次函数执行 到 最后一次函数调用之间的值获取不到。
+        timer = setTimeout(function(){
+            prevTime = Date.now();
+            timer = null;
+            fn.apply(context,args);
+        },delay);
+    }
+}
+
+```
+
+### 升级版效果
+
+![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gg0y5maak0g30hs074dgu.gif)
+
 
 
 
@@ -324,11 +376,11 @@ function handleSendPhone(val){
 	在一个页面中实时计算某个元素到窗口顶部的距离时，需要监听滚动条变化，然后计算元素坐标然后处理一些逻辑。监听滚动条变化时不用实时去计算元素位置，而是利用节流，比如300ms计算一次，这样可以避免频繁执行一些代码。还可以避免使用了`offsetHeight`,引起过多的重绘。
 
 
-##最后
+## 最后
 
 如果文中有错误，请务必留言指正，万分感谢。
 
-点个赞哟，让我们共同学习，共同进步。
+点个赞哦，让我们共同学习，共同进步。
 
 
 
