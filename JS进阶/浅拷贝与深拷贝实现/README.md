@@ -683,7 +683,7 @@ Reflect.ownKeys(obj1).forEach(key => {
 
 最终版：
 
-```
+``` javascript
 function deepCopy(source,map = new WeakMap()){
     if(!isObject(source)){
         return source;
